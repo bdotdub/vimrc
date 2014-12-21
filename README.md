@@ -19,3 +19,7 @@ Link your `vimrc`:
 Then, run vim and type in:
 
     :PlugInstall
+
+To take advantage of the features from [go-vim](https://github.com/fatih/vim-go), type:
+
+    :GoInstallBinaries
