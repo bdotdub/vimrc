@@ -2,16 +2,24 @@
 " --------
 call plug#begin('~/.vim/plugged')
 
-Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
+Plug 'Townk/vim-autoclose'
+" Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
 Plug 'bling/vim-airline'
+Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go'
+Plug 'junegunn/goyo.vim'
 Plug 'kien/ctrlp.vim'
 Plug 'mileszs/ack.vim'
+Plug 'mrtazz/simplenote.vim'
+Plug 'plasticboy/vim-markdown'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'shime/vim-livedown'
+Plug 'solarnz/thrift.vim'
 Plug 'thinca/vim-localrc'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rails', { 'for': 'ruby' }
+Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vividchalk'
 
@@ -22,7 +30,7 @@ call plug#end()
 colorscheme vividchalk
 set background=dark
 set guifont=Inconsolata:h24     " Huge and not always there ...
-set guifont=Monaco:h18
+set guifont=Monaco:h14
 set guioptions-=T               " Remove GUI toolbar
 set visualbell                  " Suppress audio/visual error bell
 set notimeout                   " No command timeout
@@ -148,6 +156,14 @@ let g:CommandTMaxHeight=20
 " Change working directory if you change root directories
 let g:NERDTreeChDirMode=2
 
+" Go
+" Run goimports on save
+let g:go_fmt_command = "goimports"
+
+let g:ycm_auto_trigger=0
+nnoremap <leader>y :let g:ycm_auto_trigger=0<CR>                " turn off YCM
+nnoremap <leader>Y :let g:ycm_auto_trigger=1<CR>                "turn on YCM
+
 " Ack
 " ---
 nmap <leader>a :Ack <c-r>=expand("<cword>")<cr> 
@@ -189,3 +205,20 @@ silent! source ~/.vimrc.local
 
 " Toggle pasting behavior
 set pastetoggle=<leader>p
+
+" Goyo
+function! s:goyo_enter()
+  set wrap
+endfunction
+
+function! s:goyo_leave()
+  set nowrap
+endfunction
+
+autocmd! User GoyoEnter
+autocmd! User GoyoLeave
+autocmd  User GoyoEnter nested call <SID>goyo_enter()
+autocmd  User GoyoLeave nested call <SID>goyo_leave()
+
+" Simplenote
+source ~/.simplenoterc
