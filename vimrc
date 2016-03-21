@@ -2,8 +2,6 @@
 " --------
 call plug#begin('~/.vim/plugged')
 
-Plug 'Townk/vim-autoclose'
-" Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
 Plug 'bling/vim-airline'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'fatih/vim-go'
@@ -15,8 +13,12 @@ Plug 'plasticboy/vim-markdown'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'shime/vim-livedown'
+Plug 'Shougo/neocomplete'
+Plug 'Shougo/neosnippet'
+Plug 'Shougo/neosnippet-snippets'
 Plug 'solarnz/thrift.vim'
 Plug 'thinca/vim-localrc'
+Plug 'Townk/vim-autoclose'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rails', { 'for': 'ruby' }
 Plug 'tpope/vim-sensible'
@@ -191,6 +193,7 @@ autocmd FileType ruby set iskeyword=@,48-57,_,?,!,192-255
 
 " Highlight JSON files as javascript
 autocmd BufRead,BufNewFile *.json set filetype=javascript
+autocmd Filetype javascript setlocal ts=4 sts=4 sw=4
 
 " Golang
 "
@@ -222,3 +225,11 @@ autocmd  User GoyoLeave nested call <SID>goyo_leave()
 
 " Simplenote
 source ~/.simplenoterc
+
+" Neocomplete
+let g:neocomplete#enable_at_startup = 1
+
+" <TAB>: completion.
+inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+inoremap <expr><CR>  pumvisible() ? "\<C-y>" : "\<CR>"
