@@ -2,27 +2,26 @@
 " --------
 call plug#begin('~/.vim/plugged')
 
-Plug 'bling/vim-airline'
-Plug 'editorconfig/editorconfig-vim'
-Plug 'fatih/vim-go'
-Plug 'junegunn/goyo.vim'
-Plug 'kien/ctrlp.vim'
-Plug 'mileszs/ack.vim'
-Plug 'mrtazz/simplenote.vim'
-Plug 'plasticboy/vim-markdown'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'shime/vim-livedown'
+Plug 'Chiel92/vim-autoformat'
 Plug 'Shougo/neocomplete'
 Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
-Plug 'solarnz/thrift.vim'
-Plug 'thinca/vim-localrc'
 Plug 'Townk/vim-autoclose'
+Plug 'bling/vim-airline'
+Plug 'fatih/vim-go'
+Plug 'keith/swift.vim'
+Plug 'kien/ctrlp.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'mileszs/ack.vim'
+Plug 'mrtazz/simplenote.vim'
+Plug 'mxw/vim-jsx'
+Plug 'plasticboy/vim-markdown'
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'thinca/vim-localrc'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rails', { 'for': 'ruby' }
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vividchalk'
 
 call plug#end()
@@ -107,10 +106,6 @@ map <leader>h   :split<CR>   " Horizontal
 map <C-c> :!
 
 " Move between screens
-map <leader>w   ^Ww
-map <leader>=   ^W=
-map <leader>j   ^Wj
-map <leader>k   ^Wk
 nmap <C-j>      <C-w>j
 nmap <C-k>      <C-w>k
 nmap <C-h>      <C-w>h
@@ -162,10 +157,6 @@ let g:NERDTreeChDirMode=2
 " Run goimports on save
 let g:go_fmt_command = "goimports"
 
-let g:ycm_auto_trigger=0
-nnoremap <leader>y :let g:ycm_auto_trigger=0<CR>                " turn off YCM
-nnoremap <leader>Y :let g:ycm_auto_trigger=1<CR>                "turn on YCM
-
 " Ack
 " ---
 nmap <leader>a :Ack <c-r>=expand("<cword>")<cr> 
@@ -187,13 +178,14 @@ autocmd BufRead,BufNewFile *.god set filetype=ruby
 autocmd BufRead,BufNewFile Gemfile* set filetype=ruby
 autocmd BufRead,BufNewFile Guardfile* set filetype=ruby
 autocmd BufRead,BufNewFile Vagrantfile set filetype=ruby
+autocmd BufRead,BufNewFile Dockerfile* set filetype=dockerfile
 "
 " Consider question/exclamation marks to be part of a Vim word.
 autocmd FileType ruby set iskeyword=@,48-57,_,?,!,192-255
 
 " Highlight JSON files as javascript
 autocmd BufRead,BufNewFile *.json set filetype=javascript
-autocmd Filetype javascript setlocal ts=4 sts=4 sw=4
+" autocmd Filetype javascript setlocal ts=4 sts=4 sw=4
 
 " Golang
 "
@@ -203,28 +195,8 @@ autocmd FileType go map gd :GoDef<CR>
 " Quick way to jump to get type info
 autocmd FileType go map gi :GoInfo<CR>
 
-" Machine-local vim settings - keep this at the end
-silent! source ~/.vimrc.local
-
 " Toggle pasting behavior
 set pastetoggle=<leader>p
-
-" Goyo
-function! s:goyo_enter()
-  set wrap
-endfunction
-
-function! s:goyo_leave()
-  set nowrap
-endfunction
-
-autocmd! User GoyoEnter
-autocmd! User GoyoLeave
-autocmd  User GoyoEnter nested call <SID>goyo_enter()
-autocmd  User GoyoLeave nested call <SID>goyo_leave()
-
-" Simplenote
-source ~/.simplenoterc
 
 " Neocomplete
 let g:neocomplete#enable_at_startup = 1
@@ -233,3 +205,36 @@ let g:neocomplete#enable_at_startup = 1
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
 inoremap <expr><CR>  pumvisible() ? "\<C-y>" : "\<CR>"
+
+" JSONify!
+autocmd BufRead,BufNewFile *.json map <leader>f :%!python -mjson.tool<CR>
+
+" Neosnippets
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+" SuperTab like snippets behavior.
+"imap <expr><TAB>
+" \ pumvisible() ? "\<C-n>" :
+" \ neosnippet#expandable_or_jumpable() ?
+" \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
+\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+
+" For conceal markers.
+if has('conceal')
+  set conceallevel=2 concealcursor=niv
+endif
+
+" Machine-local vim settings - keep this at the end
+silent! source ~/.vimrc.local
+
+" Typescript
+let g:formatdef_tsfmt = 1
+
+" Enable snipMate compatibility feature.
+let g:neosnippet#enable_snipmate_compatibility = 1
+
+" Tell Neosnippet about the other snippets
+let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
