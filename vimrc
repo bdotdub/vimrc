@@ -2,19 +2,15 @@
 " --------
 call plug#begin('~/.vim/plugged')
 
-Plug 'Chiel92/vim-autoformat'
 Plug 'Shougo/neocomplete'
 Plug 'Shougo/neosnippet'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'Townk/vim-autoclose'
 Plug 'bling/vim-airline'
 Plug 'fatih/vim-go'
-Plug 'keith/swift.vim'
 Plug 'kien/ctrlp.vim'
-Plug 'leafgarland/typescript-vim'
+Plug 'majutsushi/tagbar'
 Plug 'mileszs/ack.vim'
-Plug 'mrtazz/simplenote.vim'
-Plug 'mxw/vim-jsx'
 Plug 'plasticboy/vim-markdown'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
@@ -30,9 +26,6 @@ call plug#end()
 " ---------------------
 colorscheme vividchalk
 set background=dark
-set guifont=Inconsolata:h24     " Huge and not always there ...
-set guifont=Monaco:h14
-set guioptions-=T               " Remove GUI toolbar
 set visualbell                  " Suppress audio/visual error bell
 set notimeout                   " No command timeout
 set showcmd                     " Show typed command prefixes while waiting for operator
@@ -127,6 +120,9 @@ map \           :NERDTreeToggle<CR>
 " File tree browser showing current file - pipe (shift-backslash)
 map \|          :NERDTreeFind<CR>
 
+" Tags
+map <leader>t   :TagbarToggle<CR>
+
 " Git blame
 map <leader>gb   :Gblame<CR>
 
@@ -147,9 +143,6 @@ let NERDSpaceDelims = 1
 " Small default width for NERDTree pane
 let g:NERDTreeWinSize = 20
 
-" Small default height for CommandT
-let g:CommandTMaxHeight=20
-
 " Change working directory if you change root directories
 let g:NERDTreeChDirMode=2
 
@@ -159,7 +152,7 @@ let g:go_fmt_command = "goimports"
 
 " Ack
 " ---
-nmap <leader>a :Ack <c-r>=expand("<cword>")<cr> 
+nmap <leader>a :Ack <c-r>=expand("<cword>")<cr>
 
 " Whitespace & highlighting & language-specific config
 " ----------------------------------------------------
@@ -179,7 +172,7 @@ autocmd BufRead,BufNewFile Gemfile* set filetype=ruby
 autocmd BufRead,BufNewFile Guardfile* set filetype=ruby
 autocmd BufRead,BufNewFile Vagrantfile set filetype=ruby
 autocmd BufRead,BufNewFile Dockerfile* set filetype=dockerfile
-"
+
 " Consider question/exclamation marks to be part of a Vim word.
 autocmd FileType ruby set iskeyword=@,48-57,_,?,!,192-255
 
@@ -195,15 +188,25 @@ autocmd FileType go map gd :GoDef<CR>
 " Quick way to jump to get type info
 autocmd FileType go map gi :GoInfo<CR>
 
+" Quick way to open up godoc
+autocmd FileType go map go :GoDoc<CR>
+
+" Quick way to toggle test file
+autocmd FileType go command! R GoAlternate
+
+" Markdown
+"
+autocmd FileType markdown set wrap
+
 " Toggle pasting behavior
 set pastetoggle=<leader>p
 
 " Neocomplete
 let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_auto_select = 1
 
 " <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><S-TAB>  pumvisible() ? "\<C-p>" : "\<S-TAB>"
+inoremap <expr><TAB>  pumvisible() ? "\<C-y>" : "\<TAB>"
 inoremap <expr><CR>  pumvisible() ? "\<C-y>" : "\<CR>"
 
 " JSONify!
@@ -213,14 +216,18 @@ autocmd BufRead,BufNewFile *.json map <leader>f :%!python -mjson.tool<CR>
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
+imap <D-k>     <Plug>(neosnippet_expand_or_jump)
+smap <D-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <D-k>     <Plug>(neosnippet_expand_target)
+
+let g:go_snippet_engine = "neosnippet"
 
 " SuperTab like snippets behavior.
 "imap <expr><TAB>
 " \ pumvisible() ? "\<C-n>" :
 " \ neosnippet#expandable_or_jumpable() ?
 " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
-smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+smap <expr><TAB> neosnippet#expandable_or_jumpable() ? "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 
 " For conceal markers.
 if has('conceal')
@@ -230,11 +237,11 @@ endif
 " Machine-local vim settings - keep this at the end
 silent! source ~/.vimrc.local
 
-" Typescript
-let g:formatdef_tsfmt = 1
-
 " Enable snipMate compatibility feature.
-let g:neosnippet#enable_snipmate_compatibility = 1
+" let g:neosnippet#enable_snipmate_compatibility = 1
 
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets'
+
+" Don't conceal links for markdown
+let g:vim_markdown_conceal = 0
